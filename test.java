@@ -13,4 +13,8 @@ private void testHello(){
 int I=10; 
 } 
 
+private void testHello(){
+int X=10; 
+} 
+
 } 
