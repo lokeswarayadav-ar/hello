@@ -15,6 +15,7 @@ int I=10;
 
 private void testHello(){
 int X=10; 
+  int X=10; 
 } 
 
 } 
