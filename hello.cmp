@@ -1,0 +1,4 @@
+<aura:component>
+        <c:PersonalLoanBanner messageDefault="{!v.memberName + ', below is a summary of your pre-approved offer. We need a few more pieces of information
+before we can finalize your Line of Credit offer.'}"/>  
+</aura:component>
