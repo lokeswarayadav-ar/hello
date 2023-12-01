@@ -1,0 +1,341 @@
+<!--
+      @Component Name     : preOfferDetail.cmp
+      @Description        :   
+      @Author             : Bishnu Basnet  
+      @Modification Log   : 
+      ==============================================================================
+      Ver         Date                     Author      		      Modification
+      ==============================================================================  
+    -->
+    
+    <aura:component controller="GetOfferDetailsController" implements="lightning:availableForFlowScreens" access="global">
+        <aura:attribute name="pl_Application" type="PL_Application" />
+        <aura:attribute name="approvedForHigherAmount" type="boolean" default="false" />
+        <aura:attribute name="isMember" type="boolean" default="false" />
+        <aura:attribute name="isMsrMember" type="boolean" default="false" />
+        <aura:attribute name="isMsr" type="boolean" default="false" />
+        <aura:attribute name="isCoborrower" type="boolean" default="true" />
+        
+        <aura:attribute name="navigateTo" type="string" default="" />
+        <aura:attribute name="Navigation_Route" type="string" default="" />
+        <aura:attribute name="columnOneLayoutSize" type="double" default="8" />
+        <aura:attribute name="columnTwoLayoutSize" type="double" default="4" />    
+        
+        <aura:attribute name="errAmtMsg" type="string" default="$ XX,XXX.00" />
+        <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+        <aura:attribute name="bannerMessage" type="string" default="{!v.pl_Application.personalInformation.firstName 
+                                                                        + ', please confirm the information you provided below.'}" />
+        <aura:attribute name="buttonLabel" type="string" default="VIEW MY LOAN OPTIONS" />
+        <aura:attribute name="buttonTitle" type="string" default="View my loan options" />
+        
+        <!--Non-Auto Strata Changes-->
+        <aura:attribute name="product" type="String" />
+        <aura:attribute name="requestedLoanText" type="String" default="Requested Loan"/>
+        <aura:attribute name="loanAmountText" type="String" default="Loan Amount"/>
+        
+        <c:PersonalLoanProgressStep currentStep="1" product="{!v.product}"/>
+        <c:PersonalLoanBanner title="Pre Offer Details" messageDefault="{!v.bannerMessage}"/>
+        <!--BA2022-320: Phone - Hide Alternate Phone number-->
+        <aura:attribute name="visibleAlternatePhone" type="Boolean" default="false" />
+        
+        <fieldset class="slds-container--medium  slds-align_absolute-center">
+            <fieldset class="slds-form-element slds-form-element_compound">
+                <lightning:layout multipleRows="true">
+                    <lightning:layoutItem size="12" class="slds-align_absolute-center slds-m-top_xx-large">
+                        <lightning:layout multipleRows="true">
+                            <lightning:layoutItem size="12" class="pf-fontSize-medium" flexibility="auto">
+                                <h2><b>{!v.requestedLoanText}</b></h2>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="12" class="slds-m-top_large" largeDeviceSize="{!v.columnOneLayoutSize}"
+                                                  flexibility="auto">
+                                <h3 class="inline pf-fontSize-medium">
+                                    <aura:if isTrue="{!v.product != 'PLOC'}">
+                                    <span class="pf-fontColor-grey">Loan Term: </span>
+                                    <span class="inline"><b>{!v.pl_Application.loanInformation.payOffTimeLine}</b></span>
+                                    </aura:if>   
+                                </h3>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="12" class="slds-m-top_large" largeDeviceSize="{!v.columnTwoLayoutSize}"
+                                                  flexibility="auto">
+                                <h3 class="inline pf-fontSize-medium">
+                                    <span class="pf-fontColor-grey">{!v.loanAmountText}: </span>
+                                    <span class="inline">
+                                    <b><lightning:formattedNumber value="{!v.pl_Application.loanInformation.loanAmount}"
+                                                                  style="currency" currencyCode="USD" /></b>
+                                    </span>
+                                </h3>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="12"
+                                                  class="slds-m-top_large slds-align_absolute-center pf-fontSize-large">
+                                <aura:if isTrue="{!v.pl_Application.coBorrower.personalInformation.firstName != null }">
+                                    <h1><b>Primary Borrower Information</b></h1></aura:if>
+                            </lightning:layoutItem>
+                            <!-- Personal Info -->
+                            <lightning:layoutItem size="12" largeDeviceSize="{!v.columnOneLayoutSize}" class="slds-m-top_large">
+                                <h2 class="slds-text-heading_small  pf-fontSize-medium"><b>Personal Information</b></h2>
+                                <lightning:layout multipleRows="true" class="pf-fontColor-grey">
+                                    <lightning:layoutItem size="4" class="slds-m-top_medium" largeDeviceSize="3">
+                                        <span><b>Name:</b></span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="8" largeDeviceSize="9" class="slds-m-top_medium">
+                                        <span>{!v.pl_Application.personalInformation.firstName +' '
+                                            +v.pl_Application.personalInformation.middleName + ' ' +
+                                            v.pl_Application.personalInformation.lastName}</span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                        <span><b>DOB:</b></span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small">
+                                        <span>{!v.pl_Application.personalInformation.dob}</span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                        <span><b>SSN:</b></span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small">
+                                        <span>{!v.pl_Application.personalInformation.ssn}</span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                        <span><b>Email Address:</b></span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small"
+                                                          flexibility="grow">
+                                        <span>{!v.pl_Application.personalInformation.email}</span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                        <span><b>Mobile #:</b></span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small">
+                                        <span>{!v.pl_Application.personalInformation.mobileNumber}</span>
+                                    </lightning:layoutItem>
+                                    <aura:if isTrue="{!v.visibleAlternatePhone}">
+                                        <aura:if isTrue = "{!v.pl_Application.personalInformation.alternateNumber != ''}">
+                                            <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                                <span><b>Alternate #:</b></span>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small">
+                                                <span>{!v.pl_Application.personalInformation.alternateNumber}</span>
+                                            </lightning:layoutItem>
+                                        </aura:if>
+                                    </aura:if>
+                                </lightning:layout>
+                            </lightning:layoutItem>
+                            <!-- /Personal Info -->
+                            <!-- Home Address -->
+                            <lightning:layoutItem size="12" class="slds-m-top_large" largeDeviceSize="{!v.columnTwoLayoutSize}">
+                                <h2 class="pf-fontSize-medium"><b>Home Address</b></h2>
+                                <div class="pf-fontColor-grey">
+                                    <lightning:layout multipleRows="true">
+                                        <lightning:layoutItem size="12">
+                                            <h3 class="slds-m-top_medium"><b>Mailing Address:</b></h3>
+                                        </lightning:layoutItem>                                    
+                                        <lightning:layoutItem size="12">{!v.pl_Application.addressInformation.street}</lightning:layoutItem>
+                                            <aura:if isTrue="{!and(v.pl_Application.addressInformation.apt != null,v.pl_Application.addressInformation.apt !='')}">
+                                                {!v.pl_Application.addressInformation.apt}
+                                            </aura:if>          
+                                        <lightning:layoutItem size="12">
+                                            {!v.pl_Application.addressInformation.city},&nbsp;
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="12">                                            
+                                            {!v.pl_Application.addressInformation.stateDesc}&nbsp;
+                                            {!v.pl_Application.addressInformation.zipCode}
+                                        </lightning:layoutItem>                                  
+                                        <lightning:layoutItem size="12">
+                                            {!v.pl_Application.addressInformation.countryDesc}
+                                        </lightning:layoutItem>
+                                        <aura:if isTrue="{!v.pl_Application.addressInformation.showPOBox }">
+                                            <lightning:layoutItem size="12"></lightning:layoutItem> 
+                                            <lightning:layoutItem size="12">
+                                                <h3><b>Physical Address:</b></h3>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="12">   
+                                                {!v.pl_Application.addressInformation.altStreet}&nbsp;
+                                                {!v.pl_Application.addressInformation.altApt}
+                                            </lightning:layoutItem>                                 
+                                            <lightning:layoutItem size="12">
+                                                {!v.pl_Application.addressInformation.altCity},&nbsp;
+                                                {!v.pl_Application.addressInformation.altStateDesc}&nbsp;
+                                                {!v.pl_Application.addressInformation.altZipCode}
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="12">
+                                                {!v.pl_Application.addressInformation.altCountryDesc}
+                                            </lightning:layoutItem>
+                                        </aura:if>
+                                    </lightning:layout>
+                                </div>
+                            </lightning:layoutItem>
+                            <!-- /Home Address-->
+                            <!-- Financial Info -->
+                            <lightning:layoutItem size="12" class="slds-m-top_large" largeDeviceSize="{!v.columnOneLayoutSize}">
+                                <h2 class="slds-m-top_medium pf-fontSize-medium"><b>Financial Information</b></h2>
+                                <lightning:layout multipleRows="true" class="slds-m-top_medium pf-fontColor-grey">
+                                    <lightning:layoutItem size="7" largeDeviceSize="5">
+                                        <span><b>Personal Annual Income:</b> </span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="5" largeDeviceSize="4" class="slds-text-align_right">
+                                        <span>
+                                            <lightning:formattedNumber value="{!v.pl_Application.financialInformation.personalMonthlyIncome}"
+                                                                       style="currency" currencyCode="USD"/>
+                                        </span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="7" largeDeviceSize="5" class="pf-vertical-margin-small">
+                                        <span><b>Monthly Housing Payment:</b></span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="5" largeDeviceSize="4"
+                                                          class="pf-vertical-margin-small slds-text-align_right">
+                                        <span>
+                                            <lightning:formattedNumber value="{!v.pl_Application.financialInformation.monthlyHousingPayment}"
+                                                                       style="currency" currencyCode="USD"/>
+                                        </span>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </lightning:layoutItem>
+                            <!-- /Financial Info -->
+                            <lightning:layoutItem size="12" class="slds-m-top_large" largeDeviceSize="{!v.columnTwoLayoutSize}"></lightning:layoutItem>
+                            <!-- Co-Borrower Info -->
+                            <aura:if isTrue="{!v.pl_Application.coBorrower.personalInformation.firstName != null }">
+                                <lightning:layoutItem size="12" class="slds-m-top_large slds-align_absolute-center pf-fontSize-large">
+                                    <h1><b>Co-Borrower Information</b></h1>
+                                </lightning:layoutItem>
+                                <!-- Personal Information -->
+                                <lightning:layoutItem size="12" class="slds-m-top_large" largeDeviceSize="{!v.columnOneLayoutSize}">
+                                    <h2 class="slds-text-heading_small  pf-fontSize-medium"><b>Personal Information</b></h2>
+                                    <lightning:layout multipleRows="true" class="pf-fontColor-grey">
+                                        <lightning:layoutItem size="4" largeDeviceSize="3" class="slds-m-top_medium">
+                                            <span><b>Name:</b></span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="8" largeDeviceSize="9" class="slds-m-top_medium">
+                                            <span>{!v.pl_Application.coBorrower.personalInformation.firstName +' ' +
+                                                v.pl_Application.coBorrower.personalInformation.middleName +'
+                                                '+v.pl_Application.coBorrower.personalInformation.lastName}</span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                            <span><b>DOB:</b></span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small">
+                                            <span>{!v.pl_Application.coBorrower.personalInformation.dob}</span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                            <span><b>SSN:</b></span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small">
+                                            <span>{!v.pl_Application.coBorrower.personalInformation.ssn}</span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                            <span><b>Email Address:</b></span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small">
+                                            <span>{!v.pl_Application.coBorrower.personalInformation.email}</span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                            <span><b>Mobile #:</b></span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small">
+                                            <span>{!v.pl_Application.coBorrower.personalInformation.mobileNumber}</span>
+                                        </lightning:layoutItem>
+                                        <aura:if isTrue="{!v.visibleAlternatePhone}">
+                                            <aura:if isTrue = "{!v.pl_Application.coBorrower.personalInformation.alternateNumber != null}">
+                                                <lightning:layoutItem size="4" largeDeviceSize="3" class="pf-vertical-margin-small">
+                                                    <span><b>Alternate #:</b></span>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="8" largeDeviceSize="9" class="pf-vertical-margin-small">
+                                                    <span>{!v.pl_Application.coBorrower.personalInformation.alternateNumber}</span>
+                                                </lightning:layoutItem>
+                                            </aura:if>
+                                        </aura:if>
+                                    </lightning:layout>
+                                </lightning:layoutItem>
+                                <!-- /Personal Information -->
+                                <!-- Home Address -->
+                                <lightning:layoutItem size="12" class="slds-m-top_large" largeDeviceSize="{!v.columnTwoLayoutSize}">
+                                    <h2 class="pf-fontSize-medium"><b>Home Address</b></h2>
+                                    <div class="pf-fontColor-grey">
+                                        <lightning:layout multipleRows="true">
+                                            <lightning:layoutItem size="12">
+                                                <h3 class="slds-m-top_medium"><b>Mailing Address:</b></h3>
+                                            </lightning:layoutItem>                                    
+                                            <lightning:layoutItem size="12">
+                                                {!v.pl_Application.coBorrower.addressInformation.street}</lightning:layoutItem>
+                                                <aura:if isTrue="{!and(v.pl_Application.coBorrower.addressInformation.apt != null,v.pl_Application.coBorrower.addressInformation.apt !='')}">
+                                                    {!v.pl_Application.coBorrower.addressInformation.apt}
+                                                </aura:if>
+                                            <lightning:layoutItem size="12">
+                                                {!v.pl_Application.coBorrower.addressInformation.city},&nbsp;
+                                                {!v.pl_Application.coBorrower.addressInformation.stateDesc}&nbsp;
+                                                {!v.pl_Application.coBorrower.addressInformation.zipCode}
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="12">
+                                                {!v.pl_Application.coBorrower.addressInformation.countryDesc}
+                                            </lightning:layoutItem>
+                                            <aura:if isTrue="{!v.pl_Application.coBorrower.addressInformation.showPOBox }">
+                                                <lightning:layoutItem size="12">
+                                                    {!v.pl_Application.coBorrower.addressInformation.countryDesc}
+                                                </lightning:layoutItem>
+                                                <span class="slds-m-top_medium">
+                                                    <lightning:layoutItem size="12"><b>P O BOX Address</b></lightning:layoutItem>
+                                                    <lightning:layoutItem size="12">
+                                                        {!v.pl_Application.coBorrower.addressInformation.altStreet}&nbsp;
+                                                        {!v.pl_Application.coBorrower.addressInformation.altApt}
+                                                    </lightning:layoutItem>
+                                                </span>
+                                                <lightning:layoutItem size="12">
+                                                    {!v.pl_Application.coBorrower.addressInformation.altCity},
+                                                    {!v.pl_Application.coBorrower.addressInformation.altState}
+                                                    {!v.pl_Application.coBorrower.addressInformation.altZipCode}
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    {!v.pl_Application.coBorrower.addressInformation.altCountry}
+                                                </lightning:layoutItem>
+                                            </aura:if>
+                                        </lightning:layout>
+                                    </div>
+                                </lightning:layoutItem>
+                                <!-- /Home Address -->
+                                <!-- Financial Information -->
+                                <lightning:layoutItem size="12" class="slds-m-top_large" largeDeviceSize="{!v.columnOneLayoutSize}">
+                                    <!--<h2>Phone Number:  {!v.phone}</h2>-->
+                                    <h2 class="slds-m-top_medium pf-fontSize-medium">
+                                        <b>Financial Information</b></h2>
+                                    <lightning:layout multipleRows="true" class="slds-m-top_medium pf-fontColor-grey">
+                                        <lightning:layoutItem size="5" largeDeviceSize="5">
+                                            <span><b>Personal Annual Income: </b></span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="7" largeDeviceSize="4" class="slds-text-align_right">
+                                            <span>
+                                                <lightning:formattedNumber value="{!v.pl_Application.coBorrower.financialInformation.personalMonthlyIncome}"
+                                                                           style="currency" currencyCode="USD" />
+                                            </span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="5" largeDeviceSize="5">
+                                            <span><b>Monthly Housing Payment:</b></span>
+                                        </lightning:layoutItem>
+                                        <lightning:layoutItem size="7" largeDeviceSize="4" class="slds-text-align_right">
+                                            <span>
+                                                <lightning:formattedNumber value="{!v.pl_Application.coBorrower.financialInformation.monthlyHousingPayment}"
+                                                                           style="currency" currencyCode="USD" />
+                                            </span>
+                                        </lightning:layoutItem>
+                                    </lightning:layout>
+                                </lightning:layoutItem>
+                            </aura:if>
+                            <!-- /Finacial Information -->
+                            <lightning:layoutItem size="12" class="slds-m-bottom_large" largeDeviceSize="{!v.columnTwoLayoutSize}"></lightning:layoutItem>
+                            
+                            <!-- Buttons & Links -->                        
+                            <lightning:layoutItem size="12" largeDeviceSize="12" class="slds-m-vertical_large">
+                            <lightning:layoutItem class="slds-align_absolute-center slds-text-heading_small">
+                                <lightning:button variant="brand" label="{!v.buttonLabel}"
+                                                  title="{!v.buttonTitle}" onclick="{!c.viewLoanOptions}" />
+                            </lightning:layoutItem>
+                        </lightning:layoutItem>
+                            <lightning:layoutItem size="12" largeDeviceSize="12"
+                                                  class="slds-m-bottom_large slds-text-align_center pf-fontSize-small">
+                                Click <b><a onclick="{!c.takeBackToPersonalInfo}">here</a></b> to update the information
+                                provided.
+                            </lightning:layoutItem>                        
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </fieldset>
+        </fieldset>
+        
+    </aura:component>
