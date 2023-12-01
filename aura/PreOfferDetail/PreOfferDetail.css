@@ -1,0 +1,41 @@
+.THIS .inline {
+  display: inline;
+}
+.THIS .eightRem {
+  margin-top: 4rem;
+}
+.THIS .alignLeft {
+  align: "left";
+}
+.THIS .styleThree {
+  font-family: Helvetica;
+  font-weight: bold;
+}
+.THIS .PenFedLogo {
+  width: 70%;
+}
+.THIS .pf-fontSize-medium {
+  font-size: t(pffontSize6);
+}
+.THIS .pf-fontSize-large {
+  font-size: t(pffontSize8);
+}
+.THIS .pf-fontColor-grey {
+  color: t(colorTextWeak);
+}
+.THIS .header {
+  padding: 0.5rem;
+  background: linear-gradient(to right, #122029, #3d8cb3);
+}
+
+@media token(pfmqSmall) {
+    .THIS {
+        font-size: t(pffontSize2);
+    }
+    .THIS .pf-fontSize-large {
+        font-size: t(pffontSize6);
+    }
+    .THIS .pf-vertical-margin-small {
+        margin: 10px 0px 0px 0px;
+  }
+}
